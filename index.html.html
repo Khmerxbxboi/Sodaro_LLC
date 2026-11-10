@@ -1,0 +1,272 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Sodaro — Oakland Storefront Builder</title>
+<style>
+:root{--bg:#070d15;--panel:#111d2b;--panel2:#0c1723;--line:#2c3e51;--text:#f4f8fc;--muted:#a6b5c5;--cyan:#12c9f2;--green:#8be6bf;--pink:#e8a1e7;--gold:#ffd486}
+*{box-sizing:border-box}
+body{margin:0;background:#060a10;color:var(--text);font-family:Inter,system-ui,-apple-system,"Segoe UI",sans-serif}
+button,input,textarea{font:inherit}
+button{cursor:pointer}
+#app{min-height:100vh}
+.shell{max-width:480px;min-height:100vh;margin:auto;position:relative;background:radial-gradient(circle at 100% 0,rgba(18,201,242,.08),transparent 20rem),var(--bg);border-inline:1px solid rgba(255,255,255,.04);padding-bottom:25px}
+.page{padding:18px 19px 34px}
+.login{min-height:100vh;display:flex;flex-direction:column;justify-content:center;padding:24px}
+.logo-big{width:min(260px,75vw);height:auto;display:block;margin:0 auto 25px;border-radius:16px}
+.logo-small{width:74px;height:52px;object-fit:contain;object-position:center;border-radius:8px}
+header{display:flex;align-items:center;justify-content:space-between;margin:4px 0 22px}
+.brand{display:flex;align-items:center;gap:10px}
+.brand strong{letter-spacing:.14em;font-size:.95rem}
+.avatar{width:34px;height:34px;border-radius:50%;display:grid;place-items:center;color:var(--cyan);background:#133043;border:1px solid #286279;font-weight:900}
+.card{border:1px solid var(--line);border-radius:19px;background:linear-gradient(145deg,#142233,#101a27);padding:17px;margin:13px 0}
+.card.cyan{border-color:#276579;background:linear-gradient(140deg,#123747,#111d2b 72%)}
+.card.pink{border-color:#64456a;background:linear-gradient(140deg,#39253b,#111d2b 75%)}
+h1,h2,h3,p{margin-top:0}
+h1{font-size:1.85rem;line-height:1.12;letter-spacing:-.045em;margin-bottom:9px}
+h2{font-size:1.2rem;line-height:1.25;margin-bottom:8px}
+h3{font-size:.98rem;margin-bottom:7px}
+p{color:var(--muted);line-height:1.5}
+.eyebrow{color:var(--cyan);font-size:.71rem;font-weight:850;letter-spacing:.12em;text-transform:uppercase;margin-bottom:9px}
+.sub{font-size:.94rem;margin-bottom:17px}
+.small{font-size:.78rem}
+.tiny{font-size:.7rem}
+.note{font-size:.74rem;line-height:1.45;color:#92a3b5}
+.field{margin:13px 0}
+label{display:block;color:#d9e4ee;font-size:.82rem;font-weight:750;margin-bottom:7px}
+input,textarea{width:100%;border:1px solid #364a60;background:#09131e;color:var(--text);border-radius:12px;padding:13px;outline:none}
+textarea{min-height:75px;resize:vertical}
+input:focus,textarea:focus{border-color:var(--cyan);box-shadow:0 0 0 3px rgba(18,201,242,.12)}
+input::placeholder,textarea::placeholder{color:#74869a}
+.btn{width:100%;min-height:51px;border:0;border-radius:14px;background:var(--cyan);color:#04212b;font-weight:900;padding:13px 16px}
+.btn:hover{filter:brightness(1.07)}
+.btn.secondary{background:#182638;color:var(--text);border:1px solid #36495c}
+.btn.small{width:auto;min-height:38px;padding:8px 12px;font-size:.76rem}
+.btn:disabled{opacity:.4;cursor:not-allowed}
+.row{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.rowtop{display:flex;align-items:flex-start;justify-content:space-between;gap:12px}
+.kicker{font-size:.74rem;color:var(--muted)}
+.progress{height:8px;border-radius:99px;background:#27374a;overflow:hidden;margin:10px 0}
+.progress i{display:block;height:100%;background:linear-gradient(90deg,var(--cyan),#79eac8);border-radius:inherit}
+.stepnum{width:42px;height:42px;border-radius:14px;display:grid;place-items:center;flex:none;background:#0d2b39;color:var(--cyan);border:1px solid #28677b;font-weight:900}
+.stephead{display:flex;align-items:center;justify-content:space-between;margin:4px 0 13px}
+.stephead button{background:transparent;border:0;color:var(--muted);padding:8px 0;font-weight:750}
+.stephead span{font-size:.7rem;color:var(--cyan);font-weight:850;letter-spacing:.1em;text-transform:uppercase}
+.picks{display:grid;gap:8px;margin:12px 0}
+.pick{width:100%;border:1px solid #33475c;border-radius:13px;background:#0c1723;color:var(--text);padding:12px;text-align:left;display:flex;gap:10px;align-items:center}
+.pick.active{border-color:var(--cyan);background:#0e2b37;box-shadow:inset 0 0 0 1px rgba(18,201,242,.18)}
+.dot{width:18px;height:18px;border:2px solid #718499;border-radius:50%;flex:none}
+.pick.active .dot{border:6px solid var(--cyan)}
+.pick strong{display:block;font-size:.84rem}
+.pick small{display:block;color:var(--muted);font-size:.71rem;margin-top:2px}
+.chips{display:flex;gap:8px;flex-wrap:wrap}
+.chip{border:1px solid #3b4c60;background:#0b1622;color:#dce6ef;border-radius:99px;padding:9px 11px;font-size:.75rem;font-weight:750}
+.chip.active{border-color:var(--cyan);background:#0d2c39;color:#a8effb}
+.mapimg{width:100%;display:block;border:1px solid #334457;border-radius:14px;background:#050a10}
+.mapnote{margin:9px 1px 0;font-size:.68rem}
+.link{display:flex;align-items:center;justify-content:space-between;gap:10px;color:#91eafa;text-decoration:none;border:1px solid #2d4a60;background:#0a1622;border-radius:12px;padding:11px 12px;font-size:.76rem;font-weight:800;margin:8px 0}
+.link:hover{border-color:var(--cyan)}
+.link span:last-child{color:var(--cyan);font-size:1rem}
+.check{display:flex;align-items:flex-start;gap:10px;padding:10px 11px;border:1px solid #293b4e;border-radius:12px;background:#0b1622;margin:8px 0;color:#d8e2ec;font-size:.78rem;line-height:1.4}
+.check input{appearance:none;width:18px;height:18px;padding:0;margin:0;flex:none;border:1px solid #718499;border-radius:5px;background:#101b28}
+.check input:checked{background:var(--cyan);border-color:var(--cyan)}
+.check input:checked:after{content:"✓";display:grid;place-items:center;color:#06232b;font-size:13px;font-weight:900}
+.callout{border-left:3px solid var(--cyan);background:rgba(18,201,242,.08);padding:11px 13px;border-radius:0 12px 12px 0;color:#d2e0ec;font-size:.78rem;line-height:1.48;margin:12px 0}
+.fee{display:flex;justify-content:space-between;gap:12px;padding:12px 0;border-bottom:1px solid #27394b}
+.fee:last-child{border-bottom:0}
+.fee strong{font-size:.82rem}
+.fee b{white-space:nowrap;color:#fff;font-size:.85rem}
+.fee span{display:block;color:var(--muted);font-size:.7rem;line-height:1.4;margin-top:3px}
+.tag{display:inline-block;border:1px solid #3b5369;background:#0c1723;color:#aabacc;border-radius:99px;font-size:.65rem;padding:4px 7px;margin-left:4px}
+.tag.city{color:#9cecf8;border-color:#27677b}
+.tag.state{color:#f0b4ed;border-color:#704875}
+.tag.county{color:#ffdc9b;border-color:#72572e}
+.total{font-size:1.65rem;font-weight:950;letter-spacing:-.04em;color:var(--green);margin:5px 0}
+.banner{border:1px solid #366052;background:#10271f;border-radius:15px;padding:13px;margin:12px 0}
+.banner strong{color:var(--green)}
+.themegrid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:12px 0}
+.theme{border:1px solid #37495c;background:#0b1622;color:var(--text);border-radius:13px;padding:10px 5px;font-size:.72rem;font-weight:850}
+.theme.active{border-color:var(--cyan);background:#102b38}
+.swatches{display:flex;justify-content:center;gap:4px;margin-bottom:7px}
+.swatches i{width:14px;height:14px;border-radius:50%;border:1px solid #ffffff45}
+.scene{border:1px solid #38495b;border-radius:16px;overflow:hidden;background:#0a141e;margin:12px 0}
+.scene svg{width:100%;height:auto;display:block}
+.empty{--wall:#e8e7df;--floor:#9c8775;--glass:#a9d9e1;--sign:#101b28;--accent:#14c8ed}
+.look-warm{--wall:#f3e8d5;--floor:#b77e59;--glass:#b6e4e9;--sign:#754c3b;--accent:#db7953}
+.look-bold{--wall:#e7e9ff;--floor:#7779b7;--glass:#b8e9ef;--sign:#50447f;--accent:#e5569d}
+.look-calm{--wall:#e3f1ec;--floor:#79a99c;--glass:#b9e3e9;--sign:#3d746d;--accent:#e8ab50}
+.practice{border:1px solid #34475b;background:#0b1622;border-radius:14px;padding:12px;margin:9px 0}
+.answer{display:flex;gap:8px;margin-top:9px}
+.answer button{flex:1;border:1px solid #40536a;background:#152436;color:#eef6fc;border-radius:10px;padding:9px 5px;font-size:.7rem;font-weight:800}
+.good{color:var(--green)!important}.bad{color:var(--gold)!important}
+.lineup{border:1px solid #355166;background:#08121c;border-radius:18px;overflow:hidden;margin:15px 0}
+.lineup svg{width:100%;display:block;height:auto}
+.toast{margin:10px 0;color:var(--green);font-weight:800;font-size:.78rem}
+footer{text-align:center;color:#75879a;font-size:.68rem;margin:15px 0 0}
+.spinner{width:42px;height:42px;border:4px solid #28404d;border-top-color:var(--cyan);border-radius:50%;animation:spin .8s linear infinite;margin:20px auto}
+@keyframes spin{to{transform:rotate(360deg)}}
+@media(min-width:600px){.shell{min-height:calc(100vh - 40px);margin:20px auto;border-radius:27px;border:1px solid #203044}.login{min-height:calc(100vh - 40px)}}
+</style>
+</head>
+<body>
+<div id="app"></div>
+<script>
+const MAP="data:image/webp;base64,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";
+const LOGO="data:image/webp;base64,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";
+const key="sodaro-store-demo-v2";
+const defaults={route:"login",user:"khmerxbxboi",logged:false,business:"",kind:"",cash:"",interiorBudget:"",area:"",address:"",rent:"",deposit:"",checks:{},practice:"",theme:"warm",vibe:""};
+let old={};try{old=JSON.parse(localStorage.getItem(key)||"{}")||{}}catch(e){}
+let s={...defaults,...old,checks:old.checks||{}};
+const routes=["setup","map","lease","fees","inspection","design","finish"];
+function save(){try{localStorage.setItem(key,JSON.stringify(s))}catch(e){}}
+function esc(v){return String(v??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}
+function logoBig(){return `<img class="logo-big" src="${LOGO}" alt="Sodaro logo">`}
+function header(){return `<header><div class="brand"><img class="logo-small" src="${LOGO}" alt=""><strong>SODARO</strong></div><div class="avatar">${esc((s.user||"S").slice(0,1).toUpperCase())}</div></header>`}
+function prog(){let n=routes.indexOf(s.route);if(n<0)n=0;return `<div class="row"><span class="kicker">Oakland storefront journey</span><span class="kicker">Step ${n+1} of 7</span></div><div class="progress"><i style="width:${Math.round((n+1)/7*100)}%"></i></div>`}
+function nav(){return `<div class="row" style="gap:8px;margin-top:16px"><button class="btn secondary small" data-action="back">← Back</button><button class="btn small" data-action="next">${s.route==="design"?"Finish my store":"Continue →"}</button></div>`}
+function check(id,text){return `<label class="check"><input type="checkbox" data-check="${id}" ${s.checks[id]?"checked":""}><span>${text}</span></label>`}
+function pick(key,val,title,desc=""){return `<button class="pick ${s[key]===val?"active":""}" data-action="pick" data-key="${key}" data-value="${val}"><i class="dot"></i><span><strong>${title}</strong>${desc?`<small>${desc}</small>`:""}</span></button>`}
+function link(label,url){return `<a class="link" target="_blank" rel="noopener noreferrer" href="${url}"><span>${label}</span><span>↗</span></a>`}
+function blankStore(){
+ const name=esc(s.business||"YOUR STORE NAME");
+ return `<div class="scene empty"><svg viewBox="0 0 360 205" role="img" aria-label="Empty storefront with your business name on the sign">
+ <rect width="360" height="205" fill="#101d2a"/><rect y="166" width="360" height="39" fill="#425064"/>
+ <rect x="37" y="27" width="286" height="141" rx="5" fill="var(--wall)"/>
+ <rect x="54" y="43" width="252" height="25" rx="4" fill="var(--sign)"/>
+ <text x="180" y="61" text-anchor="middle" fill="#fff" font-size="${name.length>18?12:16}" font-weight="800" font-family="system-ui">${name}</text>
+ <rect x="56" y="77" width="142" height="72" fill="var(--glass)" stroke="#293949" stroke-width="5"/>
+ <path d="M127 77v72M56 113h142" stroke="#eff9ff" stroke-width="3" opacity=".9"/>
+ <rect x="208" y="77" width="84" height="91" fill="#b7dce0" stroke="#293949" stroke-width="5"/>
+ <rect x="219" y="88" width="62" height="58" fill="#d7eff0" opacity=".78"/>
+ <circle cx="276" cy="153" r="3" fill="#182536"/>
+ <text x="180" y="159" text-anchor="middle" fill="#233145" font-size="9" font-weight="700" font-family="system-ui">EMPTY SPACE — YOUR IDEAS GO HERE</text>
+ <path d="M15 181h330" stroke="#8c9bad" stroke-width="2" stroke-dasharray="5 6"/>
+ </svg></div>`;
+}
+function finishStore(){
+ const name=esc(s.business||"YOUR STORE");
+ return `<div class="lineup"><svg viewBox="0 0 600 290" role="img" aria-label="Completed Oakland storefront with neighboring shops and customers">
+ <rect width="600" height="290" fill="#0b1724"/><circle cx="490" cy="45" r="24" fill="#ffd786" opacity=".9"/>
+ <rect y="222" width="600" height="68" fill="#263648"/>
+ <rect x="0" y="58" width="135" height="164" fill="#293c4e"/><rect x="9" y="69" width="117" height="37" fill="#e5a35a"/>
+ <text x="67" y="93" text-anchor="middle" fill="#152334" font-size="12" font-weight="800">LOCAL MARKET</text>
+ <rect x="13" y="116" width="108" height="94" fill="#8cc7d0"/><path d="M67 116v94M13 162h108" stroke="#e5f6f8" stroke-width="4"/>
+ <rect x="465" y="58" width="135" height="164" fill="#293c4e"/><rect x="474" y="69" width="117" height="37" fill="#bd77b8"/>
+ <text x="532" y="93" text-anchor="middle" fill="#1e2635" font-size="12" font-weight="800">NEIGHBOR SHOP</text>
+ <rect x="478" y="116" width="108" height="94" fill="#83c8d0"/><path d="M532 116v94M478 162h108" stroke="#e5f6f8" stroke-width="4"/>
+ <rect x="139" y="39" width="322" height="183" fill="#eee7d8"/>
+ <rect x="150" y="53" width="300" height="42" rx="4" fill="#11283a"/>
+ <text x="300" y="80" text-anchor="middle" fill="#fff" font-size="${name.length>22?15:21}" font-weight="900" font-family="system-ui">${name}</text>
+ <path d="M154 101h292l-16 25H170z" fill="var(--accent)"/>
+ <path d="M184 103v21M224 103v21M264 103v21M304 103v21M344 103v21M384 103v21M424 103v21" stroke="#fff" stroke-width="2" opacity=".7"/>
+ <rect x="164" y="131" width="137" height="77" fill="#9bd6dc" stroke="#40556a" stroke-width="5"/>
+ <path d="M232 131v77M164 170h137" stroke="#f6ffff" stroke-width="3"/>
+ <rect x="313" y="131" width="127" height="91" fill="#a9dce0" stroke="#40556a" stroke-width="5"/>
+ <rect x="325" y="142" width="103" height="68" fill="#e4f4f4"/>
+ <circle cx="420" cy="177" r="3" fill="#1d2d3e"/>
+ <!-- sidewalk customers -->
+ <g stroke-linecap="round">
+ <circle cx="190" cy="225" r="8" fill="#9a6148"/><path d="M190 235v28m-10-16 10-7 11 8m-11 15-8 15m8-15 9 15" stroke="#e8a1e7" stroke-width="7"/>
+ <circle cx="235" cy="224" r="8" fill="#d49b72"/><path d="M235 234v29m-10-17 10-7 11 7m-11 17-8 14m8-14 10 14" stroke="#12c9f2" stroke-width="7"/>
+ <circle cx="280" cy="225" r="8" fill="#7a503d"/><path d="M280 235v27m-10-15 10-7 10 6m-10 16-8 14m8-14 9 14" stroke="#ffd486" stroke-width="7"/>
+ <circle cx="326" cy="225" r="8" fill="#c6845c"/><path d="M326 235v28m-10-15 10-7 11 7m-11 15-8 15m8-15 10 15" stroke="#8be6bf" stroke-width="7"/>
+ <circle cx="372" cy="225" r="8" fill="#e0b38b"/><path d="M372 235v27m-10-15 10-7 11 7m-11 15-8 14m8-14 9 14" stroke="#ef826b" stroke-width="7"/>
+ </g>
+ <text x="300" y="281" text-anchor="middle" fill="#c4d1de" font-size="11" font-weight="700" font-family="system-ui">${esc(s.area||"OAKLAND")} · GRAND OPENING</text>
+ </svg></div>`;
+}
+function login(){return `<main class="login">${logoBig()}<section class="card"><div class="eyebrow">Sodaro storefront builder</div><h1>Let’s build your store.</h1><p class="sub">Start with an empty space. Make choices, see your costs, and plan your next steps with Oakland.</p><form id="loginForm"><div class="field"><label for="user">Username</label><input id="user" name="user" value="${esc(s.user)}" autocomplete="username" required></div><div class="field"><label for="pass">Password</label><input id="pass" name="pass" type="password" placeholder="Enter password" autocomplete="current-password" required></div><button class="btn">Sign in to Sodaro →</button></form><p class="note" style="margin:12px 0 0">Demo sign-in only. Your password is not checked or saved. This prototype does not send applications or payments.</p></section></main>`}
+function loading(){return `<main class="login" style="text-align:center">${logoBig()}<div class="spinner"></div><h2>Opening your Oakland path…</h2><p>Getting your storefront ready.</p></main>`}
+function setup(){return `<main class="page">${header()}${prog()}<div class="eyebrow">Start with a blank space</div><h1>What will you build?</h1><p class="sub">Give your store a name, choose your starting money, and set an interior budget.</p>${blankStore()}
+ <section class="card"><div class="field"><label for="business">What is your business name?</label><input id="business" data-field="business" placeholder="Type the name for your storefront sign" value="${esc(s.business)}"></div>
+ <label>What kind of business?</label><div class="chips">${[["food","Food / café"],["retail","Retail / market"],["service","Service"],["other","Other"]].map(([v,t])=>`<button class="chip ${s.kind===v?"active":""}" data-action="pick" data-key="kind" data-value="${v}">${t}</button>`).join("")}</div></section>
+ <section class="card card cyan"><div class="eyebrow">Your starting money</div><h2>How much do you have to start?</h2><div class="picks">${[["under","Under $2,500"],["2to10","$2,500–$10,000"],["10to25","$10,000–$25,000"],["25to50","$25,000–$50,000"],["over50","$50,000+"],["unsure","Still figuring it out"]].map(([v,t])=>pick("cash",v,t)).join("")}</div>
+ <div class="eyebrow" style="margin-top:18px">Interior budget</div><h2>How much are you willing to spend on the interior?</h2><div class="picks">${[["under2500","Under $2,500"],["2500to5","$2,500–$5,000"],["5to10","$5,000–$10,000"],["10to25","$10,000–$25,000"],["over25","$25,000+"],["interiorUnsure","I’m not sure yet"]].map(([v,t])=>pick("interiorBudget",v,t)).join("")}</div>
+ <p class="note">These are planning choices. No bank account is connected.</p></section>${nav()}</main>`}
+function mapPage(){return `<main class="page">${header()}${prog()}<div class="eyebrow">Choose where to look</div><h1>Pick an Oakland area.</h1><p class="sub">Use your Sodaro map as a starting point, then check the address and permitted use before signing.</p><section class="card" style="padding:9px"><img class="mapimg" src="${MAP}" alt="Sodaro Oakland neighborhood map"><p class="mapnote">Concept map image you shared. Its sample figures and colors are not live City data or an official zoning map.</p></section>
+ <section class="card"><h2>Which area are you considering?</h2><div class="chips">${["West Oakland","Downtown","North Oakland","East Oakland","Fruitvale","Central East Oakland","Coliseum / Airport","Still exploring"].map(a=>`<button class="chip ${s.area===a?"active":""}" data-action="area" data-value="${a}">${a}</button>`).join("")}</div>
+ <div class="field"><label for="address">Store address (if you have one)</label><input id="address" data-field="address" placeholder="Add an address later" value="${esc(s.address)}"></div></section>
+ <div class="callout">Before you commit: Oakland requires zoning clearance for the business activity at the specific location. A separate clearance may be needed for each location.</div>${link("Oakland zoning clearance", "https://www.oaklandca.gov/Planning-Building/Your-Commercial-Projects-Permits/Zoning-Clearance-Permit")}${nav()}</main>`}
+function leasePage(){return `<main class="page">${header()}${prog()}<div class="eyebrow">Storefront & lease</div><h1>Check the space before you sign.</h1><p class="sub">Get the full cost and allowed use in writing. The lease can shape what you can build inside.</p>
+ <section class="card">${blankStore()}<div class="field"><label for="rent">Monthly rent estimate</label><input id="rent" data-field="rent" inputmode="decimal" placeholder="$0" value="${esc(s.rent)}"></div><div class="field"><label for="deposit">Lease deposit estimate</label><input id="deposit" data-field="deposit" inputmode="decimal" placeholder="$0" value="${esc(s.deposit)}"></div>
+ ${check("lease_use","Confirm your planned business is allowed at this address.")}${check("lease_allin","Ask about rent increases, common-area costs, utilities, deposit, and repairs.")}${check("lease_build","Check who approves interior changes and who pays for repairs.")}${check("lease_terms","Review the lease term, renewal, personal guarantee, and exit rules.")}</section>
+ <div class="callout">Ask the landlord which business name should be on the lease. Consider having a commercial lease advisor review the agreement before signing.</div>${nav()}</main>`}
+function feePage(){return `<main class="page">${header()}${prog()}<div class="eyebrow">Know the costs</div><h1>Oakland fees, up front.</h1><p class="sub">Current published fees for FY 2026–27. City, California, and County charges are separated.</p>
+ <section class="card card cyan"><div class="eyebrow">Example baseline</div><div class="total">$1,169.10</div><p class="small" style="margin:0">Example for an Oakland storefront, a California LLC, no employees, and the minimum first-year City tax estimate. This does not include fire, construction, food permits, rent, or interior work.</p></section>
+ <section class="card"><h2>Oakland City costs <span class="tag city">CITY</span></h2>
+ <div class="fee"><div><strong>Zoning clearance</strong><span>For business license at one Oakland location.</span></div><b>$107.10</b></div>
+ <div class="fee"><div><strong>New business registration</strong><span>Standard “all other classifications” application; due within 30 days of start.</span></div><b>$112</b></div>
+ <div class="fee"><div><strong>First-year business tax estimate</strong><span>Based on business type and estimated Oakland receipts; the City form lists $60 minimum.</span></div><b>$60 min.</b></div>
+ <div class="fee"><div><strong>Employee fee</strong><span>For Oakland-based businesses, if applicable.</span></div><b>$6.70 each</b></div>
+ <p class="note">City tax can be higher than the minimum. The amount depends on business classification and receipts.</p></section>
+ <section class="card"><h2>California LLC costs <span class="tag state">STATE</span></h2>
+ <div class="fee"><div><strong>LLC Articles of Organization</strong><span>California Secretary of State filing.</span></div><b>$70</b></div>
+ <div class="fee"><div><strong>Statement of Information</strong><span>Due within 90 days, then every two years.</span></div><b>$20</b></div>
+ <div class="fee"><div><strong>Annual California LLC tax</strong><span>Generally due while the LLC is active or doing business in California.</span></div><b>$800 / year</b></div>
+ <p class="note">These are State fees and tax, not City of Oakland fees. Extra LLC fees can apply at higher California income levels.</p></section>
+ <section class="card card pink"><h2>Official fee references</h2>
+ ${link("Oakland FY 2026–27 zoning fee schedule","https://www.oaklandca.gov/files/assets/city/v/10/planning-amp-building/documents/pc/permit-process/zoning-fee-2026-2027-10072026.pdf")}
+ ${link("Oakland new business application","https://www.oaklandca.gov/files/assets/city/v/2/finance/documents/business/tax-license-permits/2026-new-business-application-06-29-26.pdf")}
+ ${link("California Secretary of State LLC fees","https://www.sos.ca.gov/business-programs/cannabizfile/cannabis-forms-and-fees/limited-liability-companies-llc-california")}
+ ${link("California Franchise Tax Board LLC tax","https://www.ftb.ca.gov/file/business/types/limited-liability-company/")}
+ </section>${nav()}</main>`}
+function inspectionPage(){return `<main class="page">${header()}${prog()}<div class="eyebrow">Inspections & permits</div><h1>Plan for the checks your store needs.</h1><p class="sub">The required inspections depend on your building work, business type, and occupancy.</p>
+ <section class="card"><h2>Oakland Fire annual inspection <span class="tag city">IF REQUIRED</span></h2>
+ <div class="fee"><div><strong>Regular hours</strong><span>$392 per hour, 2.5-hour minimum.</span></div><b>$980 min.</b></div>
+ <div class="fee"><div><strong>After hours</strong><span>$550 per hour, 2.5-hour minimum.</span></div><b>$1,375 min.</b></div>
+ <div class="fee"><div><strong>Annual Fire permit</strong><span>Depends on permit type.</span></div><b>$392–$1,082</b></div>
+ <p class="note">These Fire rates apply to the City’s annual inspection request process. They are not a flat charge for every store or every inspection.</p>
+ ${link("Oakland Fire annual inspection fee form","https://www.oaklandca.gov/files/assets/city/v/1/fire/documents/fire-code-amp-inspections/in-take-form-annual-insp-request-2026-2027-final.pdf")}</section>
+ <section class="card"><h2>Building inspections <span class="tag city">IF BUILDING WORK</span></h2>
+ <p class="small">Oakland’s building permit cost depends on the project. The City says building permit fees are usually about 4–6% of project value. The number of inspections included depends on the permit valuation; there is no one price for every building inspection visit.</p>
+ ${link("Oakland inspection scheduling and requirements","https://www.oaklandca.gov/Planning-Building/Building-Construction-Permits-Inspections/Building-Inspections/Schedule-Your-Building-Inspection")}
+ ${link("Oakland Planning & Building fee schedules","https://www.oaklandca.gov/Planning-Building/Permit-Process-Overview/Planning-Building-Permit-Fees-Project-Requirements")}</section>
+ ${s.kind==="food"?`<section class="card"><h2>Food safety permits <span class="tag county">ALAMEDA COUNTY</span></h2><p class="small">Food facility permits and inspections are handled by Alameda County, not Oakland City. Cost depends on the kind and size of the food business and plan review.</p>${link("Alameda County food permit portal","https://permit.acgov.org/FoodPermit.aspx")}</section>`:""}
+ <section class="card card cyan"><div class="eyebrow">Quick practice</div><h2>Would you pass this check?</h2><p class="small">A delivery box blocks the exit path.</p><div class="chips"><button class="chip ${s.practice==="ready"?"active":""}" data-action="practice" data-value="ready">Looks ready</button><button class="chip ${s.practice==="attention"?"active":""}" data-action="practice" data-value="attention">Needs attention</button></div>${s.practice?`<p class="toast ${s.practice==="attention"?"":"bad"}">${s.practice==="attention"?"Correct. Keep exits and walkways clear.":"Try again: exits and walkways should stay clear."}</p>`:""}</section>
+ <p class="note">This practice card is for learning. It is not an official inspection result.</p>${nav()}</main>`}
+function designPage(){return `<main class="page">${header()}${prog()}<div class="eyebrow">Your creative choices</div><h1>Make the inside feel like your store.</h1><p class="sub">Choose a direction. Your interior budget and business name stay with your plan.</p>
+ <section class="card"><div class="row"><div><div class="kicker">Store name</div><strong>${esc(s.business||"Your Oakland store")}</strong></div><div class="stepnum">✦</div></div><p class="small" style="margin:10px 0 0">Interior budget: <strong>${esc(s.interiorBudget||"Not set")}</strong></p>
+ <div class="themegrid">${[["warm","Warm & natural","#f3e8d5","#db7953","#754c3b"],["bold","Bright & bold","#e7e9ff","#e5569d","#50447f"],["calm","Calm & welcoming","#e3f1ec","#e8ab50","#3d746d"]].map(([v,t,a,b,c])=>`<button class="theme ${s.theme===v?"active":""}" data-action="theme" data-value="${v}"><span class="swatches"><i style="background:${a}"></i><i style="background:${b}"></i><i style="background:${c}"></i></span>${t}</button>`).join("")}</div>
+ <div class="scene look-${esc(s.theme)}"><svg viewBox="0 0 360 170" role="img" aria-label="Interior style preview"><rect width="360" height="170" fill="#101c29"/><rect x="16" y="16" width="328" height="126" rx="8" fill="var(--wall)"/><rect x="30" y="30" width="77" height="57" fill="#aee0e4"/><path d="M68 30v57M30 58h77" stroke="#f7ffff" stroke-width="3"/><rect x="127" y="34" width="182" height="10" rx="5" fill="var(--accent)"/><rect x="137" y="52" width="10" height="38" fill="var(--sign)"/><rect x="181" y="52" width="10" height="38" fill="var(--sign)"/><rect x="225" y="52" width="10" height="38" fill="var(--sign)"/><rect x="269" y="52" width="10" height="38" fill="var(--sign)"/><rect x="128" y="89" width="181" height="8" rx="4" fill="var(--sign)"/><rect x="39" y="112" width="168" height="20" rx="5" fill="var(--sign)"/><rect x="53" y="132" width="9" height="20" fill="var(--sign)"/><rect x="184" y="132" width="9" height="20" fill="var(--sign)"/><rect x="0" y="151" width="360" height="19" fill="var(--floor)"/><path d="M292 144c-3-23 4-34 13-46 8 12 11 26 8 46" fill="#4f9e7d"/><path d="M292 152h29" stroke="var(--sign)" stroke-width="6" stroke-linecap="round"/></svg></div>
+ <div class="field"><label for="vibe">What do you want customers to feel?</label><textarea id="vibe" data-field="vibe" placeholder="Cozy, lively, peaceful, welcoming…">${esc(s.vibe)}</textarea></div></section>
+ <div class="callout">Before painting or building, check the lease, landlord approval, zoning, and permits. Your vision is yours; the City’s approval steps still apply.</div>${nav()}</main>`}
+function finish(){return `<main class="page">${header()}${prog()}<div class="eyebrow">Your first build is complete</div><h1>${esc(s.business||"Your store")} is ready to meet the neighborhood.</h1><p class="sub">Here’s your storefront vision in ${esc(s.area||"Oakland")}.</p><div class="lineup look-${esc(s.theme)}">${finishStore().replace('class="lineup"','')}</div>
+ <section class="card card cyan"><div class="row"><div><div class="eyebrow">Your plan</div><h2>Storefront concept complete ✓</h2></div><div class="stepnum">✓</div></div><p class="small">Name on sign: <strong>${esc(s.business||"Your store")}</strong><br>Interior budget: <strong>${esc(s.interiorBudget||"Not set")}</strong><br>Area: <strong>${esc(s.area||"Oakland")}</strong></p></section>
+ <div class="callout">This is your prototype’s finished vision. It does not sign a lease, form an LLC, pay fees, or receive City approval. Use the official fee links in Sodaro as you move through the real process.</div>
+ <button class="btn secondary" data-action="restart">Edit my plan</button><footer>You choose the vision. Oakland’s official process decides what can open.</footer></main>`}
+function render(){let body="";
+ if(s.route==="login")body=login();
+ else if(s.route==="loading")body=loading();
+ else if(s.route==="setup")body=setup();
+ else if(s.route==="map")body=mapPage();
+ else if(s.route==="lease")body=leasePage();
+ else if(s.route==="fees")body=feePage();
+ else if(s.route==="inspection")body=inspectionPage();
+ else if(s.route==="design")body=designPage();
+ else body=finish();
+ document.getElementById("app").innerHTML=`<div class="shell">${body}</div>`;
+}
+function updateSign(){document.querySelectorAll(".business-sign").forEach(x=>x.textContent=s.business||"YOUR STORE")}
+document.addEventListener("submit",e=>{if(e.target.id!=="loginForm")return;e.preventDefault();const f=new FormData(e.target);s.user=String(f.get("user")||"khmerxbxboi").trim();s.logged=true;s.route="loading";save();render();setTimeout(()=>{s.route="setup";save();render()},900)});
+document.addEventListener("input",e=>{const x=e.target;if(x.dataset.field){s[x.dataset.field]=x.value;save();if(x.dataset.field==="business"){document.querySelectorAll(".shopname").forEach(el=>el.textContent=s.business||"YOUR STORE")}}});
+document.addEventListener("change",e=>{if(e.target.dataset.check){s.checks[e.target.dataset.check]=e.target.checked;save()}});
+document.addEventListener("click",e=>{
+ const b=e.target.closest("[data-action]");if(!b)return;const a=b.dataset.action;
+ if(a==="pick"){s[b.dataset.key]=b.dataset.value;save();render()}
+ else if(a==="area"){s.area=b.dataset.value;save();render()}
+ else if(a==="theme"){s.theme=b.dataset.value;save();render()}
+ else if(a==="practice"){s.practice=b.dataset.value;save();render()}
+ else if(a==="next"){
+  const order={setup:"map",map:"lease",lease:"fees",fees:"inspection",inspection:"design",design:"finish"};
+  if(s.route==="map"&&!s.area){s.area="Still exploring"}
+  s.route=order[s.route]||"finish";save();render()
+ }else if(a==="back"){
+  const order={map:"setup",lease:"map",fees:"lease",inspection:"fees",design:"inspection",finish:"design"};
+  s.route=order[s.route]||"setup";save();render()
+ }else if(a==="restart"){s.route="setup";save();render()}
+});
+render();
+</script>
+</body>
+</html>
